@@ -70,8 +70,8 @@ const camPos = [gameLogic.player.x, gameLogic.player.y - 4, 4];
 const cameraUp = [0, 1, 0];
 let zoomFactor = 0;
 
-let prevPointerMovement = performance.now();
 let previousFrameTime = performance.now();
+let touchedClipSpace = null;
 
 
 gl.clearColor(0.53, 0.81, 0.92, 1);
@@ -180,6 +180,11 @@ function drawScene(timestamp) {
 
     previousFrameTime = timestamp;
 
+    if (touchedClipSpace) {
+        const worldSpace = getWorldSpaceFromClipspace(...touchedClipSpace);
+        gameLogic.player.setTargetPosition(...worldSpace);
+    }
+
     Mat4.lookAt(viewMatrix, camPos, camTarget, cameraUp);
     Mat4.multiply(viewPerspectiveMatrix, perspectiveMatrix, viewMatrix);
 
@@ -287,27 +292,19 @@ function drawModel(model, position, scale) {
     canvas.addEventListener("touchcancel", existingTouchHandler);
 
     function onpointerdown(x, y) {
-        gameLogic.player.held = false;
-
         const clipspaceX = -1 + x / canvas.clientWidth * 2;
         const clipspaceY = 1 - y / canvas.clientHeight * 2;
-
-        const worldSpace = getWorldSpaceFromClipspace(clipspaceX, clipspaceY);
-        console.log(...worldSpace);
-
-        gameLogic.player.setTargetPosition(...worldSpace);
-
-        // onpointermove(x, y);
+        touchedClipSpace = [clipspaceX, clipspaceY];
     }
 
     function onpointermove(x, y) {
-        const ray = getWorldSpaceFromClipspace(x, y);
-
-
+        const clipspaceX = -1 + x / canvas.clientWidth * 2;
+        const clipspaceY = 1 - y / canvas.clientHeight * 2;
+        touchedClipSpace = [clipspaceX, clipspaceY];
     }
 
     function onpointerup() {
-        gameLogic.player.held = false;
+        touchedClipSpace = null;
     }
 }
 

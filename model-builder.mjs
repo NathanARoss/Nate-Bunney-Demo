@@ -20,7 +20,6 @@ export function initCircle(gl, iterations, [u1, v1], [u2, v2]) {
         model[i++] = 0;
         const u = u1 + ((u2 - u1) * 0.5 * (1 + Math.cos(theta)));
         const v = v1 + ((v2 - v1) * 0.5 * (1 - Math.sin(theta)));
-        console.log(u, v);
         model[i++] = ((u * 255) | 0) + ((v * 255) | 0) * 256;
     }
 
