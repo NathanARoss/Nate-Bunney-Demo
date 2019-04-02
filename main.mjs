@@ -169,7 +169,7 @@ function drawScene(timestamp) {
     debugText.textContent = debug;
 
     const cameraHeight = getCameraHeight(zoomFactor);
-    const progress = Math.min((timestamp - previousFrameTime) / 1000, 1);
+    const progress = Math.min((timestamp - previousFrameTime) / 500, 1);
     camTarget[0] += (playerX - camTarget[0]) * progress;
     camTarget[1] += (playerY - camTarget[1]) * progress;
     camTarget[2] += (playerZ - camTarget[2]) * progress;
