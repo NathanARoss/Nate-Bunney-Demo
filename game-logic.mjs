@@ -195,14 +195,13 @@ export class Player {
 
             this.x += diff[0] * distance;
             this.y += diff[1] * distance;
-
-            this.angle = Math.atan2(diff[1], diff[0]);
         }
     }
 
     setTargetPosition(x, y) {
         this.targetX = x;
         this.targetY = y;
+        this.angle = Math.atan2(y - this.y, x - this.x);
     }
 
     getTargetPosition() {
