@@ -61,7 +61,7 @@ const programInfo = {
 };
 
 loadTexture(gl, "atlas.png");
-const targetMarker = initCircle(gl, 3, [0.125, 0.125], [0.25, 0.25]);
+const targetMarker = initCircle(gl, 3, [0, 3 / 8], [0.125, 1 / 2]);
 
 const gameLogic = new GameLogic(gl);
 

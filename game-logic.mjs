@@ -1,15 +1,15 @@
 import {
-    initSquare,
-    initSquareCollection,
+    initSquares,
 } from "./model-builder.mjs";
-
-import {
-    normalize
-} from "./matrix-math.mjs";
 
 export class GameLogic {
     constructor(gl) {
-        const playerModel = initSquare(gl, [-1, 0, 0], [1, 0, 2], [0, 0.25], [0.125, 0]);
+        const playerModel = initSquares(gl, 1, [
+            [-1, 0, 0],
+            [1, 0, 2],
+            [0, 0.25],
+            [0.125, 0]
+        ]);
         this.player = new Player(0, 0, playerModel, [0.5, 0.5], 1, 2);
 
         const bridge = [];
@@ -19,14 +19,14 @@ export class GameLogic {
                 [
                     [-5, 10 + i * 2, 0],
                     [5, 12 + i * 2, 0],
-                    [0.125, 1 / 16],
-                    [0.25, 0]
+                    [0, 1 / 4 + 1 / 16],
+                    [0.125, 1 / 4]
                 ]
             )
         }
 
         this.worldGeometry = [{
-            model: initSquareCollection(gl, 10,
+            model: initSquares(gl, 10,
                 [
                     [-10, -10, 0],
                     [10, 10, 0],

@@ -88,8 +88,6 @@ export function initSquares(gl, scale, ...squareList) {
         v1 = moveAwayFromEdge(v1, v2);
         v2 = moveAwayFromEdge(v2, v1);
 
-        console.log(u1, v1, u2, v2);
-
         model[i++] = x2;
         model[i++] = y2;
         model[i++] = z2;
