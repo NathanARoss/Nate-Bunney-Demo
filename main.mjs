@@ -172,7 +172,7 @@ function drawScene(timestamp) {
     debugText.textContent = debug;
 
     const cameraHeight = getCameraHeight(zoomFactor);
-    const progress = Math.min((timestamp - previousFrameTime) / 500, 1);
+    const progress = Math.min((timestamp - previousFrameTime) / 250, 1);
     camTarget[0] += (playerX - camTarget[0]) * progress;
     camTarget[1] += (playerY - camTarget[1]) * progress;
     camTarget[2] += (playerZ - camTarget[2]) * progress;
@@ -199,7 +199,8 @@ function drawScene(timestamp) {
         drawModel(geometry.model, geometry.position, geometry.scale);
     }
 
-    drawModel(gameLogic.player.model, [playerX, playerY, 0.125], gameLogic.player.scale);
+    const player = gameLogic.player;
+    drawModel(player.model, [playerX, playerY, 0.125], ...player.getModelView());
 
     if (gameLogic.player.hasTargetPosition()) {
         const target = [...gameLogic.player.getTargetPosition(), 0.125];
@@ -212,7 +213,7 @@ function drawScene(timestamp) {
     requestAnimationFrame(drawScene);
 }
 
-function drawModel(model, position, scale) {
+function drawModel(model, position, scale, firstVertex = 0, vertexCount = model.vertexCount) {
     modelViewMatrix.data.set(Mat4.IDENTITY.data);
 
     Mat4.translate(modelViewMatrix, modelViewMatrix, [...position]);
@@ -224,7 +225,7 @@ function drawModel(model, position, scale) {
     gl.bindBuffer(gl.ARRAY_BUFFER, model.buffer);
     gl.vertexAttribPointer(programInfo.attribLocations.position, 3, gl.SHORT, false, 8, 0);
     gl.vertexAttribPointer(programInfo.attribLocations.texCoord, 2, gl.UNSIGNED_BYTE, true, 8, 6);
-    gl.drawArrays(model.mode, 0, model.vertexCount);
+    gl.drawArrays(model.mode, firstVertex, vertexCount);
 }
 
 

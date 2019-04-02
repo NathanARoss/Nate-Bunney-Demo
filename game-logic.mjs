@@ -4,13 +4,7 @@ import {
 
 export class GameLogic {
     constructor(gl) {
-        const playerModel = initSquares(gl, 1, [
-            [1, 0, 0, 31, 63],
-            [1, 0, 2, 31, 0],
-            [-1, 0, 2, 0, 0],
-            [-1, 0, 0, 0, 63],
-        ]);
-        this.player = new Player(0, 0, playerModel, [0.5, 0.5], 1, 2);
+        this.player = new Player(gl, 0, 0);
 
         const bridge = [];
 
@@ -122,17 +116,69 @@ export function setTickRateScale(scale, gameLogic) {
 setTickRateScale(1);
 
 export class Player {
-    constructor(x = 0, y = 0, model, scale, width, height) {
+    constructor(gl, x = 0, y = 0) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
         this.prevX = x;
         this.prevY = y;
-        this.model = model;
-        this.scale = scale;
         this.targetX = x;
         this.targetY = y;
+
+        this.width = 1;
+        this.height = 2;
+
+        this.angle = 0;
+
+        this.model = initSquares(gl, 1,
+            [
+                [1, 0, 0, 31, 63],
+                [1, 0, 2, 31, 0],
+                [-1, 0, 2, 0, 0],
+                [-1, 0, 0, 0, 63],
+            ],
+            [
+                [1, 0, 0, 63, 63],
+                [1, 0, 2, 63, 0],
+                [-1, 0, 2, 33, 0],
+                [-1, 0, 0, 33, 63],
+            ],
+            [
+                [1, 0, 0, 95, 63],
+                [1, 0, 2, 95, 0],
+                [-1, 0, 2, 65, 0],
+                [-1, 0, 0, 65, 63],
+            ],
+            [
+                [1, 0, 0, 127, 63],
+                [1, 0, 2, 127, 0],
+                [-1, 0, 2, 97, 0],
+                [-1, 0, 0, 97, 63],
+            ],
+            [
+                [1, 0, 0, 159, 63],
+                [1, 0, 2, 159, 0],
+                [-1, 0, 2, 129, 0],
+                [-1, 0, 0, 129, 63],
+            ],
+            [
+                [1, 0, 0, 97, 63],
+                [1, 0, 2, 97, 0],
+                [-1, 0, 2, 127, 0],
+                [-1, 0, 0, 127, 63],
+            ],
+            [
+                [1, 0, 0, 65, 63],
+                [1, 0, 2, 65, 0],
+                [-1, 0, 2, 95, 0],
+                [-1, 0, 0, 95, 63],
+            ],
+            [
+                [1, 0, 0, 33, 63],
+                [1, 0, 2, 33, 0],
+                [-1, 0, 2, 63, 0],
+                [-1, 0, 0, 63, 63],
+            ],
+        );
     }
 
     tick(gameLogic) {
@@ -149,6 +195,8 @@ export class Player {
 
             this.x += diff[0] * distance;
             this.y += diff[1] * distance;
+
+            this.angle = Math.atan2(diff[1], diff[0]);
         }
     }
 
@@ -168,5 +216,21 @@ export class Player {
     teleport(x, y) {
         this.x = x;
         this.y = y;
+    }
+
+    getModelView() {
+        let angle = this.angle + 5 * Math.PI / 8;
+
+        if (angle < 0) {
+            angle += Math.PI * 2;
+        }
+
+        let spriteChoice = Math.floor(angle * 4 / Math.PI);
+
+        return [
+            [0.5, 0.5],
+            spriteChoice * this.model.vertexCount / 8,
+            this.model.vertexCount / 8
+        ];
     }
 }
