@@ -77,6 +77,9 @@ let touchedClipSpace = null;
 gl.clearColor(0.53, 0.81, 0.92, 1);
 gl.enable(gl.DEPTH_TEST);
 
+gl.enable(gl.CULL_FACE);
+gl.cullFace(gl.BACK);
+
 
 document.body.onresize = function () {
     canvas.width = window.innerWidth * window.devicePixelRatio;
