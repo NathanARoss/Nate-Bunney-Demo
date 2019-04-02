@@ -52,42 +52,7 @@ export function initCircle(gl, iterations, [u1, v1], [u2, v2]) {
     };
 }
 
-export function initSquare(gl, [x1, y1, z1], [x2, y2, z2], [u1, v1], [u2, v2]) {
-    const model = new Int16Array(4 * 4);
-    let i = 0;
-
-    model[i++] = x2;
-    model[i++] = y2;
-    model[i++] = z2;
-    model[i++] = (u2 * 255) | 0 + ((v2 * 255) | 0) * 256;
-
-    model[i++] = x1;
-    model[i++] = y2;
-    model[i++] = z2;
-    model[i++] = (u1 * 255) | 0 + ((v2 * 255) | 0) * 256;
-
-    model[i++] = x2;
-    model[i++] = y1;
-    model[i++] = z1;
-    model[i++] = (u2 * 255) | 0 + ((v1 * 255) | 0) * 256;
-
-    model[i++] = x1;
-    model[i++] = y1;
-    model[i++] = z1;
-    model[i++] = (u1 * 255) | 0 + ((v1 * 255) | 0) * 256;
-
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, model, gl.STATIC_DRAW);
-
-    return {
-        buffer,
-        vertexCount: model.length / 4,
-        mode: gl.TRIANGLE_STRIP
-    };
-}
-
-export function initSquareCollection(gl, scale, ...squareList) {
+export function initSquares(gl, scale, ...squareList) {
     const model = new Int16Array(squareList.length * 6 * 4);
     let i = 0;
 
@@ -106,35 +71,54 @@ export function initSquareCollection(gl, scale, ...squareList) {
         z1 *= scale;
         z2 *= scale;
 
+        u1 = (u1 * 255) | 0;
+        u2 = (u2 * 255) | 0;
+        v1 = (v1 * 255) | 0;
+        v2 = (v2 * 255) | 0;
+
+        function moveAwayFromEdge(a, b) {
+            if (a !== 0 && a !== 255) {
+                return Math.min(Math.max(a + Math.sign(b - a), 0), 255);
+            }
+            return a;
+        }
+
+        u1 = moveAwayFromEdge(u1, u2);
+        u2 = moveAwayFromEdge(u2, u1);
+        v1 = moveAwayFromEdge(v1, v2);
+        v2 = moveAwayFromEdge(v2, v1);
+
+        console.log(u1, v1, u2, v2);
+
         model[i++] = x2;
         model[i++] = y2;
         model[i++] = z2;
-        model[i++] = (u2 * 255) | 0 + ((v2 * 255) | 0) * 256;
+        model[i++] = u2 + v2 * 256;
 
         model[i++] = x1;
         model[i++] = y2;
         model[i++] = z2;
-        model[i++] = (u1 * 255) | 0 + ((v2 * 255) | 0) * 256;
+        model[i++] = u1 + v2 * 256;
 
         model[i++] = x2;
         model[i++] = y1;
         model[i++] = z1;
-        model[i++] = (u2 * 255) | 0 + ((v1 * 255) | 0) * 256;
+        model[i++] = u2 + v1 * 256;
 
         model[i++] = x1;
         model[i++] = y2;
         model[i++] = z2;
-        model[i++] = (u1 * 255) | 0 + ((v2 * 255) | 0) * 256;
+        model[i++] = u1 + v2 * 256;
 
         model[i++] = x2;
         model[i++] = y1;
         model[i++] = z1;
-        model[i++] = (u2 * 255) | 0 + ((v1 * 255) | 0) * 256;
+        model[i++] = u2 + v1 * 256;
 
         model[i++] = x1;
         model[i++] = y1;
         model[i++] = z1;
-        model[i++] = (u1 * 255) | 0 + ((v1 * 255) | 0) * 256;
+        model[i++] = u1 + v1 * 256;
     }
 
     const buffer = gl.createBuffer();
